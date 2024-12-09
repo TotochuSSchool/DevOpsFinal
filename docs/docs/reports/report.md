@@ -1,6 +1,6 @@
-## Rapport
-
 > de Maxime Masson et Mélène Dufrénois.
+
+## Rapport
 
 ### Git
 
@@ -18,5 +18,13 @@ Les **features** permettent d'ajouter des fonctionnalités, pour se faire (à pa
 Pour les **rollbacks**, nous revenons à la dernière version stable taguée dans Git et redéployons cette version en production.
 
 Concernant les **hotfix**, comme pour les features, la branche doit se nommer `hotfix/nom-du-bug`. En revanche, elle peut être créée à partir de la branche main puisqu'elle doit être créée à partir du dernier tag stable.
+
+---
+
+### Liens
+
+---
+
+### How to contribute to the project
 
 ---
