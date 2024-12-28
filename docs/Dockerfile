@@ -1,8 +1,8 @@
 FROM node:23 AS build
 WORKDIR /app
-COPY package.json yarn.lock ./
+COPY docs/package.json docs/yarn.lock ./
 RUN yarn install
-COPY . .
+COPY docs/ .
 RUN yarn build
 
 FROM nginx:alpine
