@@ -5,6 +5,7 @@ RUN go mod download
 COPY . . 
 RUN go build -o vote-api
 
+
 FROM debian:bullseye-slim
 WORKDIR /app
 COPY --from=build /app/vote-api .
