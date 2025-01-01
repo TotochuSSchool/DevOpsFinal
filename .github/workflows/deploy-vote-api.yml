@@ -22,6 +22,8 @@ jobs:
           docker-compose -f vote-api/docker-compose.yml build vote-api
           docker tag vote-api:latest ${{ secrets.DOCKER_USERNAME }}/vote-api:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/vote-api:latest
+        env:
+          PG_URL: ${{ secrets.PG_URL }}
   deploy:
     runs-on: ubuntu-latest
     needs: build-and-push
