@@ -31,3 +31,5 @@ jobs:
       - name: Deploy vote-api
         run: |
           docker-compose -f vote-api/docker-compose.yml up -d
+        env:
+          PG_URL: ${{ secrets.PG_URL }}
