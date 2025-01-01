@@ -1,24 +1,27 @@
-name: Deploy Docusaurus to Netlify
+name: Deploy Applications
 
 on:
   push:
     branches:
-      - feature/dockerfile  # Déclenche le workflow sur les push vers la branche
+      - main
+      - feature/dockerfile  # Déclenche le workflow sur push dans ces branches
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
+    # Étape 1 : Checkout
     - name: Checkout Repository
       uses: actions/checkout@v3
 
+    # Étape 2 : Déploiement de la documentation
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: 18
 
-    - name: Install dependencies
+    - name: Install dependencies for Docs
       working-directory: ./docs
       run: yarn install
 
@@ -26,15 +29,31 @@ jobs:
       working-directory: ./docs
       run: yarn build
 
-    - name: Dockerize Site
+    - name: Dockerize and Push Docs
       run: |
-        docker build -f docs/Dockerfile -t docusaurus-site .
+        docker build -f docs/Dockerfile -t docs .
+        docker tag docs:latest ${{ secrets.DOCKER_USERNAME }}/docs:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/docs:latest
 
     - name: Install Netlify CLI
       run: npm install -g netlify-cli
 
-    - name: Deploy to Netlify
+    - name: Deploy Docs to Netlify
       env:
-        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        NETFLIFY_AUTH_TOKEN: ${{ secrets.NETFLIFY_AUTH_TOKEN }}
+        NETFLIFY_SITE_ID: ${{ secrets.NETFLIFY_SITE_ID }}
       run: netlify deploy --prod --dir=docs/build
+
+    # Étape 3 : Déploiement de `vote-api` avec Docker Compose
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build and Push vote-api
+      run: |
+        docker-compose -f vote-api/docker-compose.yml build vote-api
+        docker tag vote-api:latest ${{ secrets.DOCKER_USERNAME }}/vote-api:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/vote-api:latest
+
+    - name: Deploy vote-api
+      run: |
+        docker-compose -f vote-api/docker-compose.yml up -d
