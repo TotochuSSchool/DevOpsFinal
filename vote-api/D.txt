@@ -1,16 +1,15 @@
 FROM golang:1.23 AS build
 WORKDIR /app
-COPY go.mod go.sum ./
+COPY go.mod go.sum ./ 
 RUN go mod download
-COPY . .
-RUN go build -o /app/vote-api
+COPY . . 
+RUN go build -o vote-api
 
 FROM debian:bullseye-slim
 WORKDIR /app
-COPY --from=build /app/vote-api /app/vote-api
+COPY --from=build /app/vote-api .
 ENV PG_URL="${PG_URL}"
 EXPOSE 8080
 RUN useradd -m nonroot
 USER nonroot
-RUN chmod +x /app/vote-api
-CMD ["/app/vote-api"]
+CMD ["./vote-api"]
