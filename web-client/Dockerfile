@@ -5,6 +5,7 @@ RUN yarn install
 COPY . .
 RUN yarn build
 
+
 FROM node:23-slim
 WORKDIR /app
 COPY --from=build /app ./
