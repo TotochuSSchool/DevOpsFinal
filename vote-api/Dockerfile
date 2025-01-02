@@ -10,7 +10,7 @@ WORKDIR /app
 COPY --from=build /app/vote-api /app/vote-api
 ENV PG_URL="${PG_URL}"
 EXPOSE 8080
+RUN chmod +x /app/vote-api
 RUN useradd -m nonroot
 USER nonroot
-RUN chmod +x /app/vote-api
 CMD ["/app/vote-api"]
