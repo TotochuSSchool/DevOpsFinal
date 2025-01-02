@@ -1,9 +1,8 @@
-FROM golang:1.20 AS build
+FROM golang:1.23 AS build
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
-RUN mkdir -p /app/vote-api
-COPY . ./vote-api/
+COPY . .
 RUN go build -o /app/vote-api
 
 FROM debian:bullseye-slim
