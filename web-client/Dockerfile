@@ -1,6 +1,5 @@
 FROM node:23 AS build
 WORKDIR /app
-
 COPY web-client/package.json web-client/yarn.lock ./
 RUN yarn install --production
 COPY web-client . 
