@@ -1,3 +1,7 @@
+networks:
+  vote-network:
+    driver: bridge
+
 services:
   vote-api:
     build:
@@ -10,15 +14,21 @@ services:
       PG_URL: ${PG_URL}
     depends_on:
       - db
+    networks:
+      - vote-network
 
   db:
     image: postgres:17
     environment:
-      PG_URL: ${PG_URL}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: examplepassword
+      POSTGRES_DB: vote
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - vote-network
 
 volumes:
   postgres_data:
