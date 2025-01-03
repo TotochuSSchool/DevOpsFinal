@@ -1,4 +1,5 @@
 FROM golang:1.23 AS build
+RUN apt-get update && apt-get install -y libc6
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
@@ -6,11 +7,45 @@ COPY . .
 RUN go build -o /app/vote-api
 
 FROM debian:bullseye-slim
+RUN apt-get update && apt-get install -y bash
 WORKDIR /app
 COPY --from=build /app/vote-api /app/vote-api
-ENV PG_URL="${PG_URL}"
-EXPOSE 8080
 RUN chmod +x /app/vote-api
 RUN useradd -m nonroot
 USER nonroot
-CMD ["/app/vote-api"]
+EXPOSE 8080
+CMD ["./app/vote-api"]
+
+
+
+
+
+services:
+  vote-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: vote-api:latest
+    ports:
+      - "8080:8080"
+    environment:
+      #PG_URL: ${PG_URL}
+      PG_URL: postgresql://neondb_owner:TlBk9QYmZb6t@ep-bold-lab-a5cwq1pi.us-east-2.aws.neon.tech/neondb?sslmode=require
+    depends_on:
+      - db
+    entrypoint: [ "tail", "-f", "/dev/null" ]  # Ajouté pour ne rien faire et garder le conteneur en vie
+
+  db:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: vote_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
