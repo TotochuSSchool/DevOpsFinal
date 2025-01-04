@@ -1,2 +1,5 @@
 .idea
 *.iml
+
+# Local Netlify folder
+.netlify
