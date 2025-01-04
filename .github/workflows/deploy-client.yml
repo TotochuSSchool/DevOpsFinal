@@ -3,7 +3,7 @@ name: Deploy Client Application
 on:
   push:
     branches:
-      - feature/dockerfile  # Déclenche le workflow sur les push vers cette branche
+      - main
 
 jobs:
   build-and-deploy:

@@ -3,7 +3,7 @@ name: Deploy vote-api
 on:
   push:
     branches:
-      - feature/dockerfile  # Déclenche le workflow sur les push vers cette branche
+      - main  # Déclenche le workflow sur les push vers cette branche
 
 jobs:
   build-and-push:
